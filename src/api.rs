@@ -1,15 +1,13 @@
-//! HTTP API 服务器
+//! HTTP API 服务器 (v2)
 
 use axum::{
     extract::State,
     http::StatusCode,
-    response::sse::{Event, Sse},
     routing::{get, post},
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use std::time::Duration;
 use tokio::sync::Mutex;
 use tower_http::cors::CorsLayer;
 
@@ -54,6 +52,7 @@ pub struct ModelInfo {
     pub vocab_size: usize,
     pub max_seq_len: usize,
     pub quantization: String,
+    pub features: Vec<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -87,14 +86,23 @@ async fn model_info(
 ) -> Json<ModelInfo> {
     let state = state.lock().await;
     Json(ModelInfo {
-        name: "FishAI-v0.1".to_string(),
-        version: "0.1.0".to_string(),
-        architecture: "GPT-2 (custom, from scratch)".to_string(),
+        name: "FishAI-v2".to_string(),
+        version: "2.0.0".to_string(),
+        architecture: "LLaMA-style (RoPE+SwiGLU+RMSNorm+GQA+WeightTie+NoBias)".to_string(),
         params: format!("~{}M", state.config.total_params() / 1_000_000),
         quantized_size: format!("{:.1} MB", state.config.quantized_size_mb()),
         vocab_size: state.config.vocab_size,
         max_seq_len: state.config.max_seq_len,
-        quantization: "INT4 Per-Channel".to_string(),
+        quantization: "Mixed-Precision (FP16+INT4)".to_string(),
+        features: vec![
+            "RoPE".into(),
+            "SwiGLU".into(),
+            "RMSNorm".into(),
+            "GQA".into(),
+            "WeightTying".into(),
+            "NoBias".into(),
+            "MixedPrecision".into(),
+        ],
     })
 }
 
@@ -122,7 +130,7 @@ async fn chat(
     Ok(Json(ChatResponse {
         reply,
         tokens_generated: new_tokens.len(),
-        model: "FishAI-v0.1".to_string(),
+        model: "FishAI-v2".to_string(),
     }))
 }
 
@@ -146,13 +154,13 @@ async fn chat_stream(
         Json(ChatResponse {
             reply,
             tokens_generated: new_tokens.len(),
-            model: "FishAI-v0.1".to_string(),
+            model: "FishAI-v2".to_string(),
         })
     } else {
         Json(ChatResponse {
             reply: "模型未加载".to_string(),
             tokens_generated: 0,
-            model: "FishAI-v0.1".to_string(),
+            model: "FishAI-v2".to_string(),
         })
     }
 }

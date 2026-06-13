@@ -1,14 +1,15 @@
-//! FishAI Engine - FishLab-ai 自研 GPT 推理引擎
+//! FishAI Engine v2 — 小体积最聪明的自研 Transformer
 //!
-//! 完全自研的 Transformer 架构实现：
-//! - GPT-2 风格 Decoder-Only Transformer
-//! - 多头自注意力机制 (Multi-Head Self-Attention)
-//! - 前馈神经网络 (Feed-Forward Network)
-//! - 层归一化 (Layer Normalization)
-//! - 4-bit 整数量化 (INT4 Quantization)
-//! - BPE 分词器
+//! v2 架构升级 (对标 LLaMA/Phi):
+//! - RoPE (Rotary Position Embedding) — 零参数位置编码
+//! - SwiGLU 激活函数 — 比 GELU 更强表达力
+//! - RMSNorm — 比 LayerNorm 更快更简
+//! - GQA (Grouped Query Attention) — 省 7% 参数 + 50% KV 缓存
+//! - 权重绑定 — Embed 与 LM Head 共享, 省 24-38% 参数
+//! - 无偏置 — 现代发现 bias 在 RMSNorm+Residual 下冗余
+//! - 混合精度量化 — 关键层 FP16, 其余 INT4
 //!
-//! FishAI — 小而能干，源自 FishLab-ai
+//! FishAI v2 — 小体积, 最聪明
 
 pub mod model;
 pub mod quantize;

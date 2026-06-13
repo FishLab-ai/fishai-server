@@ -15,18 +15,23 @@ const PORT: u16 = 3031;
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    println!("╔══════════════════════════════════════╗");
-    println!("║       🐟 FishAI Engine v0.1.0        ║");
-    println!("║   FishLab-ai 自研 GPT 推理引擎 (Rust) ║");
-    println!("╚══════════════════════════════════════╝");
+    println!("╔══════════════════════════════════════════════╗");
+    println!("║       🐟 FishAI Engine v2.0.0               ║");
+    println!("║   小体积最聪明 — FishLab-ai 自研 (Rust)      ║");
+    println!("║   RoPE + SwiGLU + RMSNorm + GQA + WeightTie ║");
+    println!("╚══════════════════════════════════════════════╝");
     println!();
 
     let config = ModelConfig::default();
+    println!("[v2 架构] RoPE + SwiGLU + RMSNorm + GQA + WeightTying + NoBias");
     println!("[配置] 模型参数量: ~{}M", config.total_params() / 1_000_000);
-    println!("[配置] 量化后大小: {:.1} MB", config.quantized_size_mb());
-    println!("[配置] 量化方案: INT4 Per-Channel");
+    println!("[配置] 混合精度量化后: {:.1} MB", config.quantized_size_mb());
+    println!("[配置] GQA: {} Q heads × {} KV heads (group_size={})",
+        config.n_heads, config.n_kv_heads, config.n_groups());
+    println!("[配置] SwiGLU d_ff: {} (8/3 × d_model)", config.d_ff);
     println!("[配置] 上下文长度: {}", config.max_seq_len);
     println!("[配置] 词汇表大小: {}", config.vocab_size);
+    println!("[配置] 权重绑定: {}", if config.weight_tying { "是" } else { "否" });
     println!();
 
     let weights = match GPTWeights::load_from_file("weights/model_q4.json") {
@@ -62,7 +67,7 @@ async fn main() {
     let app = api::create_router(state);
 
     let addr = std::net::SocketAddr::from(([0, 0, 0, 0], PORT));
-    println!("[服务] 🐟 FishAI Engine 启动于 http://0.0.0.0:{}", PORT);
+    println!("[服务] 🐟 FishAI Engine v2 启动于 http://0.0.0.0:{}", PORT);
     println!("[服务] API 端点:");
     println!("  POST /api/chat         - 对话");
     println!("  POST /api/chat/stream  - 流式对话");
