@@ -87,7 +87,7 @@ async fn model_info(
 ) -> Json<ModelInfo> {
     let state = state.lock().await;
     Json(ModelInfo {
-        name: "TinyAI-v0.1".to_string(),
+        name: "FishAI-v0.1".to_string(),
         version: "0.1.0".to_string(),
         architecture: "GPT-2 (custom, from scratch)".to_string(),
         params: format!("~{}M", state.config.total_params() / 1_000_000),
@@ -122,11 +122,10 @@ async fn chat(
     Ok(Json(ChatResponse {
         reply,
         tokens_generated: new_tokens.len(),
-        model: "TinyAI-v0.1".to_string(),
+        model: "FishAI-v0.1".to_string(),
     }))
 }
 
-// 流式接口 - 使用简单的 JSON 响应代替 SSE 避免类型问题
 async fn chat_stream(
     State(state): State<Arc<Mutex<AppState>>>,
     Json(req): Json<ChatRequest>,
@@ -147,13 +146,13 @@ async fn chat_stream(
         Json(ChatResponse {
             reply,
             tokens_generated: new_tokens.len(),
-            model: "TinyAI-v0.1".to_string(),
+            model: "FishAI-v0.1".to_string(),
         })
     } else {
         Json(ChatResponse {
             reply: "模型未加载".to_string(),
             tokens_generated: 0,
-            model: "TinyAI-v0.1".to_string(),
+            model: "FishAI-v0.1".to_string(),
         })
     }
 }

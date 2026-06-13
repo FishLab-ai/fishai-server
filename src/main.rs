@@ -16,8 +16,8 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     println!("╔══════════════════════════════════════╗");
-    println!("║       🧠 TinyAI Engine v0.1.0        ║");
-    println!("║   超轻量自研 GPT 推理引擎 (Rust)      ║");
+    println!("║       🐟 FishAI Engine v0.1.0        ║");
+    println!("║   FishLab-ai 自研 GPT 推理引擎 (Rust) ║");
     println!("╚══════════════════════════════════════╝");
     println!();
 
@@ -62,10 +62,10 @@ async fn main() {
     let app = api::create_router(state);
 
     let addr = std::net::SocketAddr::from(([0, 0, 0, 0], PORT));
-    println!("[服务] 🚀 TinyAI Engine 启动于 http://0.0.0.0:{}", PORT);
+    println!("[服务] 🐟 FishAI Engine 启动于 http://0.0.0.0:{}", PORT);
     println!("[服务] API 端点:");
-    println!("  POST /api/chat         - 非流式对话");
-    println!("  POST /api/chat/stream  - 流式对话 (SSE)");
+    println!("  POST /api/chat         - 对话");
+    println!("  POST /api/chat/stream  - 流式对话");
     println!("  GET  /api/model        - 模型信息");
     println!("  GET  /health           - 健康检查");
 

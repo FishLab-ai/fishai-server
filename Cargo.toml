@@ -1,8 +1,8 @@
 [package]
-name = "tinyai-engine"
+name = "fishai-engine"
 version = "0.1.0"
 edition = "2021"
-description = "TinyAI - 超轻量自研 GPT 推理引擎，4-bit 量化，无需 Git LFS"
+description = "FishAI - FishLab-ai 自研 GPT 推理引擎，Rust 编写，4-bit 量化，无需 Git LFS"
 authors = ["FishLab-ai"]
 license = "MIT"
 
