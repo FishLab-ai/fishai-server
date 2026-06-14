@@ -1,17 +1,19 @@
-//! FishAI Engine v2 — 小体积最聪明的自研 Transformer
+//! FishAI Engine v3 — 小体积最聪明的自研 Transformer 推理引擎
 //!
-//! v2 架构升级 (对标 LLaMA/Phi):
-//! - RoPE (Rotary Position Embedding) — 零参数位置编码
-//! - SwiGLU 激活函数 — 比 GELU 更强表达力
-//! - RMSNorm — 比 LayerNorm 更快更简
-//! - GQA (Grouped Query Attention) — 省 7% 参数 + 50% KV 缓存
-//! - 权重绑定 — Embed 与 LM Head 共享, 省 24-38% 参数
-//! - 无偏置 — 现代发现 bias 在 RMSNorm+Residual 下冗余
-//! - 混合精度量化 — 关键层 FP16, 其余 INT4
+//! v3 核心升级 (对比 v2):
+//! - KV Cache: 推理从 O(n²) 降到 O(n)
+//! - 真流式 SSE: 逐 token 推送
+//! - HuggingFace BPE 分词器: 真正的 BPE 合并
+//! - Top-k/Top-p 采样: 可控文本生成
+//! - 群组量化: 每 128 元素共享 scale/zp
+//! - RoPE Scaling: 支持 Linear/YaRN 外推
+//! - 多模型尺寸: S (~34M) / M (~400M) / L (~1.5B)
+//! - 二进制权重格式: 替代 JSON
 //!
-//! FishAI v2 — 小体积, 最聪明
+//! FishAI v3 — 小体积, 最聪明
 
+pub mod api;
+pub mod bench;
 pub mod model;
 pub mod quantize;
 pub mod tokenizer;
-pub mod api;
